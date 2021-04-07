@@ -1,0 +1,25 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+# libraries
+```{r}
+#install.packages("waffle", repos = "https://cinc.rud.is")
+library(tidyverse)
+library(waffle)
+
+```
+### Makes waffle plot for number of users in each Dept. Assigns NA to Other and Depts with low counts to Other
+```{r}
+read_csv(file = "test_data.csv") %>%
+  mutate_at(vars(Dept), ~ replace_na(.,  "Other")) %>%
+  count(Dept)%>%
+  count(Dept = fct_collapse(Dept,Other = Dept[n <= 2]),wt = n)%>%
+  ggplot(aes(fill = Dept, values = n)) +
+  coord_equal() +
+  theme_void() +
+  geom_waffle(n_rows = 10,  colour = "white", flip = T, make_proportional = F )
+  
+ 
+```
